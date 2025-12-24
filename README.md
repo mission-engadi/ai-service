@@ -1,551 +1,267 @@
-# AI Service
+# AI Service - Mission Engadi
 
-> AI-powered content generation, translation, and automation service
+AI-powered content generation, translation, and automation service for the Mission Engadi platform.
 
-[![CI/CD Pipeline](https://docs.github.com/assets/cb-40551/images/help/actions/superlinter-workflow-sidebar.png)
-[![codecov](https://i.ytimg.com/vi/AAl4HmJ3YuM/maxresdefault.jpg)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.108+-green.svg)](https://fastapi.tiangolo.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+## Overview
 
-Part of the [Mission Engadi](https://engadi.org) microservices architecture.
+The AI Service provides comprehensive AI capabilities including:
+- **Content Generation**: Social posts, articles, stories, donor communications, newsletters
+- **Translation**: Multi-language translation (en/es/fr/pt) with quality scoring
+- **Image Generation**: AI-powered image creation and variations
+- **Content Enhancement**: Grammar correction, tone adjustment, SEO optimization, summarization
+- **Automation**: Workflow automation for content publishing
+- **Task Management**: AI task tracking with approval workflows
+- **Template Management**: Reusable content templates
+- **Generated Content**: Management and publishing of AI-generated content
 
-## 📋 Table of Contents
+## Technology Stack
 
-- [Overview](#overview)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Configuration](#configuration)
-  - [Running Locally](#running-locally)
-- [Development](#development)
-  - [Project Structure](#project-structure)
-  - [Database Migrations](#database-migrations)
-  - [Testing](#testing)
-  - [Code Quality](#code-quality)
-- [API Documentation](#api-documentation)
-- [Deployment](#deployment)
-- [Monitoring](#monitoring)
-- [Contributing](#contributing)
-- [License](#license)
+- **Framework**: FastAPI (Python 3.11+)
+- **Database**: PostgreSQL with SQLAlchemy ORM
+- **AI Integration**: Abacus.AI Platform
+- **Authentication**: JWT tokens
+- **Testing**: Pytest with async support
+- **Deployment**: Docker & Docker Compose
 
-## 🎯 Overview
-
-The AI Service is a FastAPI-based microservice that handles [describe main functionality]. It's part of the Mission Engadi platform, which aims to [mission statement].
-
-## ✨ Features
-
-- **RESTful API**: Clean, versioned API with automatic OpenAPI documentation
-- **Async/Await**: Fully asynchronous for high performance
-- **Database**: PostgreSQL with SQLAlchemy ORM and async support
-- **Authentication**: JWT-based authentication with role-based access control
-- **Validation**: Request/response validation using Pydantic
-- **Testing**: Comprehensive test suite with pytest
-- **Docker**: Containerized application with docker-compose
-- **CI/CD**: Automated testing and deployment with GitHub Actions
-- **Monitoring**: Health checks and readiness probes
-- **Logging**: Structured logging with contextual information
-
-## 🏗️ Architecture
-
-This service follows a clean architecture pattern:
-
-```
-ai_service/
-├── app/
-│   ├── api/               # API layer
-│   │   └── v1/            # API version 1
-│   │       ├── endpoints/ # Route handlers
-│   │       └── api.py     # API router aggregation
-│   ├── core/              # Core utilities
-│   │   ├── config.py      # Configuration management
-│   │   ├── security.py    # Auth utilities
-│   │   └── logging.py     # Logging configuration
-│   ├── db/                # Database layer
-│   │   ├── base.py        # Base classes
-│   │   └── session.py     # Database session management
-│   ├── models/            # SQLAlchemy models
-│   ├── schemas/           # Pydantic schemas
-│   ├── services/          # Business logic
-│   └── dependencies/      # Dependency injection
-├── tests/                 # Test suite
-│   ├── unit/              # Unit tests
-│   ├── integration/       # Integration tests
-│   └── conftest.py        # Test fixtures
-├── migrations/            # Alembic migrations
-└── docs/                  # Additional documentation
-```
-
-## 🚀 Getting Started
+## Quick Start
 
 ### Prerequisites
 
 - Python 3.11+
-- PostgreSQL 15+
-- Redis 7+ (optional, for caching)
-- Docker & Docker Compose (optional, for containerized development)
+- PostgreSQL 14+
+- Abacus.AI API Key
 
 ### Installation
 
 1. **Clone the repository**
-
 ```bash
-git clone https://github.com/mission-engadi/ai_service.git
-cd ai_service
+git clone https://github.com/mission-engadi/ai-service.git
+cd ai-service
 ```
 
 2. **Create virtual environment**
-
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # On Windows: venv\\Scripts\\activate
 ```
 
 3. **Install dependencies**
-
 ```bash
 pip install -r requirements.txt
 pip install -r requirements-dev.txt  # For development
 ```
 
-### Configuration
-
-1. **Copy environment template**
-
+4. **Configure environment**
 ```bash
 cp .env.example .env
+# Edit .env with your configuration
 ```
 
-2. **Edit `.env` file with your configuration**
+5. **Run database migrations**
+```bash
+alembic upgrade head
+```
 
-```env
-# Application
-PROJECT_NAME="AI Service"
-PORT=8010
-ENVIRONMENT="development"
-DEBUG="true"
+6. **Start the service**
+```bash
+# Using startup script
+./scripts/start.sh
 
-# Security
-SECRET_KEY="your-secret-key-here"  # Generate with: openssl rand -hex 32
+# Or manually
+uvicorn app.main:app --host 0.0.0.0 --port 8010 --reload
+```
+
+### Using Docker
+
+```bash
+docker-compose up -d
+```
+
+## API Endpoints
+
+The service exposes **49 endpoints** across 8 routers:
+
+- **Content Generation** (8 endpoints): `/api/v1/content/generate/*`
+- **Translation** (5 endpoints): `/api/v1/translation/*`
+- **Image Generation** (4 endpoints): `/api/v1/images/*`
+- **Content Enhancement** (6 endpoints): `/api/v1/enhancement/*`
+- **Automation** (7 endpoints): `/api/v1/automation/*`
+- **AI Tasks** (6 endpoints): `/api/v1/tasks/*`
+- **Content Templates** (7 endpoints): `/api/v1/templates/*`
+- **Generated Content** (6 endpoints): `/api/v1/generated/*`
+
+### API Documentation
+
+- Swagger UI: `http://localhost:8010/docs`
+- ReDoc: `http://localhost:8010/redoc`
+- Full API Documentation: [API_DOCUMENTATION.md](./API_DOCUMENTATION.md)
+
+## Service Scripts
+
+```bash
+# Start service
+./scripts/start.sh
+
+# Stop service
+./scripts/stop.sh
+
+# Restart service
+./scripts/restart.sh
+
+# Check status
+./scripts/status.sh
+```
+
+## Testing
+
+Run tests with coverage:
+
+```bash
+# All tests
+pytest
+
+# With coverage report
+pytest --cov=app --cov-report=html
+
+# Specific test file
+pytest tests/unit/test_content_generation.py
+
+# View coverage
+open htmlcov/index.html
+```
+
+## Project Structure
+
+```
+ai_service/
+├── app/
+│   ├── api/
+│   │   └── v1/
+│   │       └── endpoints/          # 8 endpoint routers (49 total endpoints)
+│   ├── core/
+│   │   ├── config.py              # Configuration
+│   │   ├── security.py            # JWT authentication
+│   │   └── abacus_client.py       # Abacus.AI integration
+│   ├── db/
+│   │   ├── session.py             # Database session
+│   │   └── base_class.py          # Base model
+│   ├── models/                     # SQLAlchemy models
+│   ├── schemas/                    # Pydantic schemas
+│   ├── services/                   # Business logic (8 services)
+│   └── main.py                    # Application entry point
+├── tests/
+│   ├── unit/                      # Unit tests
+│   ├── integration/               # Integration tests
+│   └── conftest.py                # Test fixtures
+├── migrations/                     # Alembic migrations
+├── scripts/                        # Startup scripts
+├── docker-compose.yml
+├── Dockerfile
+└── requirements.txt
+```
+
+## Configuration
+
+Key environment variables:
+
+```bash
+# Service
+SERVICE_NAME=ai-service
+SERVICE_PORT=8010
+ENVIRONMENT=development
 
 # Database
-DATABASE_URL="postgresql+asyncpg://postgres:postgres@localhost:5432/ai_service_db"
+DATABASE_URL=postgresql+asyncpg://user:pass@localhost:5432/ai_service
 
-# Redis
-REDIS_URL="redis://localhost:6379/0"
+# Security
+SECRET_KEY=your-secret-key-here
+JWT_SECRET_KEY=your-jwt-secret-key
+
+# Abacus.AI
+ABACUS_API_KEY=your-abacus-api-key
+ABACUS_BASE_URL=https://api.abacus.ai
+
+# External Services
+CONTENT_SERVICE_URL=http://localhost:8002
+SOCIAL_MEDIA_SERVICE_URL=http://localhost:8009
 ```
 
-### Running Locally
+## Integration
 
-#### Option 1: Docker Compose (Recommended)
+The AI Service integrates with:
 
-```bash
-# Start all services (app, database, redis)
-docker-compose up -d
+- **Auth Service**: User authentication and authorization
+- **Content Service**: Content publishing and management
+- **Social Media Service**: Social media posting
+- **Abacus.AI Platform**: AI model inference
 
-# View logs
-docker-compose logs -f app
+See [INTEGRATION_GUIDE.md](./INTEGRATION_GUIDE.md) for detailed integration instructions.
 
-# Stop services
-docker-compose down
-```
+## Deployment
 
-The API will be available at `http://localhost:8010`
+See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for:
+- Production deployment
+- Docker deployment
+- Kubernetes deployment
+- Environment configuration
 
-#### Option 2: Local Development
+## Development
 
-1. **Start PostgreSQL and Redis**
+### Adding New Endpoints
 
-```bash
-# Using Docker
-docker run -d -p 5432:5432 -e POSTGRES_PASSWORD=postgres postgres:15-alpine
-docker run -d -p 6379:6379 redis:7-alpine
-```
-
-2. **Run database migrations**
-
-```bash
-alembic upgrade head
-```
-
-3. **Start the application**
-
-```bash
-uvicorn app.main:app --reload --port 8010
-```
-
-The API will be available at `http://localhost:8010`
-
-## 💻 Development
-
-### Project Structure
-
-#### API Layer (`app/api/`)
-- **Endpoints**: Define HTTP routes and handle requests/responses
-- **Validation**: Automatic request validation using Pydantic schemas
-- **Documentation**: Auto-generated OpenAPI/Swagger docs
-
-#### Business Logic (`app/services/`)
-- **Services**: Contain business logic and orchestrate operations
-- **Separation**: Keep business logic separate from API layer
-- **Reusability**: Services can be used across multiple endpoints
-
-#### Data Layer (`app/models/` & `app/schemas/`)
-- **Models**: SQLAlchemy ORM models (database structure)
-- **Schemas**: Pydantic schemas (API contracts)
-- **Separation**: Clear distinction between database and API representations
-
-#### Core Utilities (`app/core/`)
-- **Configuration**: Centralized settings management
-- **Security**: Authentication and authorization utilities
-- **Logging**: Structured logging setup
-
-### Database Migrations
-
-This project uses Alembic for database migrations.
-
-#### Create a new migration
-
-```bash
-# Auto-generate migration from model changes
-alembic revision --autogenerate -m "Description of changes"
-
-# Create empty migration (for data migrations)
-alembic revision -m "Description of changes"
-```
-
-#### Apply migrations
-
-```bash
-# Upgrade to latest version
-alembic upgrade head
-
-# Upgrade to specific version
-alembic upgrade <revision>
-
-# Downgrade one version
-alembic downgrade -1
-
-# Show current version
-alembic current
-
-# Show migration history
-alembic history
-```
-
-### Testing
-
-#### Run all tests
-
-```bash
-pytest
-```
-
-#### Run with coverage
-
-```bash
-pytest --cov=app --cov-report=html
-```
-
-#### Run specific test categories
-
-```bash
-# Unit tests only
-pytest tests/unit/ -m unit
-
-# Integration tests only
-pytest tests/integration/ -m integration
-
-# Run specific test file
-pytest tests/unit/test_security.py
-
-# Run specific test
-pytest tests/unit/test_security.py::TestPasswordHashing::test_password_hash_and_verify
-```
-
-#### Writing Tests
-
-##### Unit Tests
-Test individual functions or classes in isolation:
-
-```python
-def test_password_hashing():
-    password = "secure_password"
-    hashed = get_password_hash(password)
-    assert verify_password(password, hashed)
-```
-
-##### Integration Tests
-Test API endpoints with database:
-
-```python
-def test_create_example(client, auth_headers):
-    response = client.post(
-        "/api/v1/examples/",
-        json={"title": "Test", "status": "active"},
-        headers=auth_headers,
-    )
-    assert response.status_code == 201
-```
+1. Create schema in `app/schemas/`
+2. Add service method in `app/services/`
+3. Create endpoint in `app/api/v1/endpoints/`
+4. Register router in `app/api/v1/api.py`
+5. Write tests in `tests/`
 
 ### Code Quality
 
-#### Format code
-
 ```bash
-# Format with black
-black app tests
+# Format code
+black app/ tests/
 
-# Sort imports
-isort app tests
+# Lint code
+flake8 app/ tests/
+
+# Type checking
+mypy app/
 ```
 
-#### Lint code
+## Monitoring
 
-```bash
-# Check with flake8
-flake8 app tests
+- Health check: `GET /api/v1/health`
+- Readiness check: `GET /api/v1/ready`
+- Metrics: Available via Prometheus endpoint (if enabled)
 
-# Type checking with mypy
-mypy app
-
-# Security checks
-bandit -r app
-```
-
-#### Pre-commit checks
-
-```bash
-# Run all checks before committing
-make check
-```
-
-## 📚 API Documentation
-
-### Interactive Documentation
-
-Once the service is running, visit:
-
-- **Swagger UI**: `http://localhost:8010/api/v1/docs`
-- **ReDoc**: `http://localhost:8010/api/v1/redoc`
-- **OpenAPI Schema**: `http://localhost:8010/api/v1/openapi.json`
-
-### Health Endpoints
-
-#### Basic Health Check
-
-```bash
-GET /api/v1/health
-```
-
-Returns service status without checking dependencies.
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "service": "AI Service",
-  "version": "0.1.0",
-  "environment": "development",
-  "timestamp": "2024-01-01T12:00:00.000Z"
-}
-```
-
-#### Readiness Check
-
-```bash
-GET /api/v1/ready
-```
-
-Returns service readiness including dependency checks.
-
-**Response:**
-```json
-{
-  "status": "ready",
-  "service": "AI Service",
-  "version": "0.1.0",
-  "environment": "development",
-  "timestamp": "2024-01-01T12:00:00.000Z",
-  "checks": {
-    "database": "connected",
-    "redis": "connected"
-  }
-}
-```
-
-### Authentication
-
-Most endpoints require authentication. Include JWT token in the Authorization header:
-
-```bash
-curl -H "Authorization: Bearer <token>" http://localhost:8010/api/v1/examples/
-```
-
-### Example Endpoints
-
-See the interactive documentation for complete API reference.
-
-## 🚢 Deployment
-
-### Deploy to Fly.io
-
-1. **Install Fly.io CLI**
-
-```bash
-curl -L https://fly.io/install.sh | sh
-```
-
-2. **Login to Fly.io**
-
-```bash
-fly auth login
-```
-
-3. **Create and configure app**
-
-```bash
-fly launch --name ai_service
-```
-
-4. **Set secrets**
-
-```bash
-fly secrets set SECRET_KEY=<your-secret-key>
-fly secrets set DATABASE_URL=<your-database-url>
-```
-
-5. **Deploy**
-
-```bash
-fly deploy
-```
-
-### Environment Variables for Production
-
-**Required:**
-- `SECRET_KEY`: Strong random secret key
-- `DATABASE_URL`: PostgreSQL connection string
-- `ENVIRONMENT`: Set to "production"
-- `DEBUG`: Set to "false"
-
-**Optional:**
-- `REDIS_URL`: Redis connection string
-- `KAFKA_BOOTSTRAP_SERVERS`: Kafka servers
-- `DATADOG_API_KEY`: DataDog monitoring key
-- `CORS_ORIGINS`: Allowed CORS origins
-
-### Database Setup
-
-For production, use a managed PostgreSQL service:
-
-1. **Fly.io Postgres**
-
-```bash
-fly postgres create --name ai_service-db
-fly postgres attach ai_service-db
-```
-
-2. **Run migrations**
-
-```bash
-fly ssh console
-alembic upgrade head
-```
-
-## 📊 Monitoring
-
-### Health Checks
-
-Configure your load balancer or monitoring system to check:
-
-- **Liveness**: `GET /api/v1/health` (should always return 200)
-- **Readiness**: `GET /api/v1/ready` (checks dependencies)
-
-### Logging
-
-The service uses structured JSON logging in production. Logs include:
-
-- Request/response details
-- User context
-- Error stack traces
-- Performance metrics
-
-View logs:
-
-```bash
-# Docker Compose
-docker-compose logs -f app
-
-# Fly.io
-fly logs
-```
-
-### Metrics
-
-Enable metrics collection by setting:
-
-```env
-ENABLE_METRICS=true
-DATADOG_API_KEY=<your-key>
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-### Quick Start
+## Contributing
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Make your changes and write tests
-4. Run tests and linting: `make check`
-5. Commit with conventional commits: `git commit -m "feat: add new feature"`
-6. Push and create a pull request
+2. Create a feature branch
+3. Make your changes
+4. Write tests
+5. Submit a pull request
 
-### Development Workflow
+## Documentation
 
-```bash
-# Create feature branch
-git checkout -b feature/my-feature
+- [API Documentation](./API_DOCUMENTATION.md)
+- [Integration Guide](./INTEGRATION_GUIDE.md)
+- [Deployment Guide](./DEPLOYMENT_GUIDE.md)
+- [Implementation Summary](./IMPLEMENTATION_COMPLETE.md)
 
-# Make changes
-# ... edit files ...
+## Support
 
-# Run tests
-pytest
+For issues and questions:
+- GitHub Issues: https://github.com/mission-engadi/ai-service/issues
+- Documentation: https://docs.mission-engadi.org
 
-# Format and lint
-make format
-make lint
+## License
 
-# Commit changes
-git add .
-git commit -m "feat: description of feature"
-
-# Push to GitHub
-git push origin feature/my-feature
-```
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Built with [FastAPI](https://fastapi.tiangolo.com)
-- Database ORM by [SQLAlchemy](https://www.sqlalchemy.org)
-- Testing with [pytest](https://pytest.org)
-- Part of [Mission Engadi](https://engadi.org)
-
-## 📞 Support
-
-- **Documentation**: [docs.engadi.org](https://docs.engadi.org)
-- **Issues**: [GitHub Issues](https://github.com/mission-engadi/ai_service/issues)
-- **Email**: support@engadi.org
+Copyright © 2024 Mission Engadi. All rights reserved.
 
 ---
 
-Made with ❤️ by the Mission Engadi team
+**Service Port**: 8010  
+**Status**: Production Ready ✅  
+**Version**: 1.0.0  
+**Last Updated**: December 2024

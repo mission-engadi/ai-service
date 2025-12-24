@@ -69,6 +69,23 @@ class Settings(BaseSettings):
     
     # External Services
     AUTH_SERVICE_URL: str = "http://localhost:8001"
+    CONTENT_SERVICE_URL: str = "http://localhost:8003"
+    SOCIAL_MEDIA_SERVICE_URL: str = "http://localhost:8007"
+    NOTIFICATION_SERVICE_URL: str = "http://localhost:8008"
+    PARTNERS_CRM_SERVICE_URL: str = "http://localhost:8005"
+    PROJECTS_SERVICE_URL: str = "http://localhost:8006"
+    
+    # Abacus.AI Configuration
+    ABACUS_AI_API_KEY: Optional[str] = None  # Automatically loaded from environment
+    ABACUS_AI_DEPLOYMENT_TOKEN: str = "your-deployment-token"
+    ABACUS_AI_DEPLOYMENT_ID: str = "your-deployment-id"
+    ABACUS_AI_API_URL: str = "https://api.abacus.ai"
+    
+    # AI Model Settings
+    AI_DEFAULT_MODEL: str = "gpt-4"
+    AI_MAX_TOKENS: int = 2000
+    AI_TEMPERATURE: float = 0.7
+    AI_TIMEOUT: int = 60  # seconds
     
     # Logging
     LOG_LEVEL: str = "INFO"
